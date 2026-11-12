@@ -1,0 +1,39 @@
+name: Kataloğa proje öner
+description: Ek A'ya eklenmesi gereken bir proje öner
+labels: ["katalog"]
+body:
+  - type: input
+    id: repo
+    attributes:
+      label: Depo adresi
+      placeholder: https://github.com/owner/repo
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Kategori
+      options:
+        - İstemci kütüphanesi
+        - API dokümantasyonu
+        - Kimlik doğrulama yardımcısı
+        - Yapay zekâ / MCP
+        - Resmî olmayan uygulama
+        - Araştırma / deney
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Neden eklenmeli?
+      description: Listedekilerden neyi farklı veya daha iyi yapıyor?
+    validations:
+      required: true
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Kontroller
+      options:
+        - label: Proje hesap üretmiyor, ücretli özellikleri atlatmıyor ve başkalarının verisini ifşa etmiyor.
+          required: true
+        - label: Projenin yazarı değilim veya yazarı olduğumu belirttim.

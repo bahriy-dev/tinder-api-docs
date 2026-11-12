@@ -1,0 +1,17 @@
+name: Kırık bağlantı veya hata
+description: Kırık bir bağlantı, yazım hatası ya da anlatım sorunu bildir
+labels: ["bakım"]
+body:
+  - type: input
+    id: where
+    attributes:
+      label: Nerede?
+      placeholder: "Bölüm veya sayfa adresi"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Sorun nedir?
+    validations:
+      required: true

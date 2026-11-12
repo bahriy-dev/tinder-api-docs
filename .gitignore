@@ -1,0 +1,11 @@
+# mdBook çıktısı
+dist/
+
+# Sırlar
+.env
+.env.*
+!.env.example
+
+# İşletim sistemi
+.DS_Store
+Thumbs.db
