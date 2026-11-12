@@ -1,56 +1,55 @@
-# Önsöz
+# Preface
 
-Tinder'ın geliştiricilere açık, belgelenmiş bir API'si yok. Yine de on yılı
-aşkın süredir yüzlerce geliştirici, uygulamanın kendi sunucularıyla nasıl
-konuştuğunu inceledi, not aldı ve kütüphaneler yazdı. Bu bilgiler bugün
-GitHub'da onlarca depoya, eski gist'lere ve issue yorumlarına dağılmış
-durumda. Birçoğu da artık geçerli değil.
+Tinder has no public, documented developer API. Even so, for more than a
+decade hundreds of developers have studied how the app talks to its own
+servers, taken notes and written libraries. That knowledge is now scattered
+across dozens of GitHub repositories, old gists and issue threads, and much
+of it no longer holds.
 
-Bu kitap o dağınık bilgiyi tek yerde topluyor. Ama yalnızca bir liste
-değil: Her endpoint'i en az bir **kaynak kodla** karşılaştırdım, hangi
-bilginin hangi döneme ait olduğunu işaretledim ve çelişkileri açıkça yazdım.
+This handbook brings that knowledge together. It is more than a list: every
+endpoint was compared against at least one piece of **source code**, each
+fact is marked with the period it belongs to, and contradictions are called
+out explicitly.
 
-## Bu kitap kimin için?
+## Who this book is for
 
-- Tinder'ın istemci–sunucu mimarisini merak eden **yazılım geliştiriciler**
-- Tersine mühendislikle belgelenmiş bir API'nin nasıl evrildiğini görmek
-  isteyen **öğrenciler**
-- Kendi hesabının verileri üzerinde küçük deneyler yapmak isteyenler
-- Güvenlik ve gizlilik **araştırmacıları**
+- **Developers** curious about Tinder's client–server architecture
+- **Students** who want to see how a reverse-engineered API evolves over time
+- People who want to run small experiments on **their own** account data
+- Security and privacy **researchers**
 
-Toplu hesap açmak, ücretli özellikleri bedava açmak ya da başkalarının
-verisini toplamak isteyenler için bu kitapta hiçbir şey yok. Nedenleri
-[Sorumlu kullanım ve hukuk](bolumler/13-sorumlu-kullanim.md) bölümünde.
+There is nothing here for anyone who wants to create accounts in bulk, unlock
+paid features for free or collect other people's data. The reasons are in
+[Responsible use and the law](chapters/13-responsible-use.md).
 
-## Nasıl okunmalı?
+## How to read it
 
-| Hedefin | Okuma sırası |
+| Your goal | Reading order |
 | --- | --- |
-| Genel resmi görmek | 1 → 2 → 10 → 11 |
-| Bir istemci yazmak | 1 → 2 → 3 → 4–9 → 12 |
-| Hazır bir kütüphane seçmek | 11 → Ek A |
-| Bir endpoint'i hızlıca bulmak | 10 (referans matrisi) |
+| See the big picture | 1 → 2 → 10 → 11 |
+| Write a client | 1 → 2 → 3 → 4–9 → 12 |
+| Pick an existing library | 11 → Appendix A |
+| Look up an endpoint quickly | 10 (reference matrix) |
 
-## İşaretler
+## Markers
 
-Kitap boyunca her bilginin kaynağı ve tazeliği şu işaretlerle belirtilir:
+Throughout the book, the freshness of each fact is marked like this:
 
-| İşaret | Anlamı |
+| Marker | Meaning |
 | :---: | --- |
-| 🟢 **Güncel** | 2025–2026'da bakımı yapılan en az bir kaynak kodda kullanılıyor |
-| 🟡 **Belirsiz** | Yalnızca 2020–2024 kaynaklarında var; hâlâ çalışıyor olabilir |
-| 🔴 **Tarihsel** | 2020 öncesine ait ve büyük olasılıkla artık çalışmıyor |
-| 💳 | Ücretli abonelik (Plus, Gold, Platinum) gerektiriyor |
+| 🟢 **Current** | Used in at least one client maintained in 2025–2026 |
+| 🟡 **Uncertain** | Only seen in 2020–2024 material; it may still work |
+| 🔴 **Historical** | Pre-2020 and very likely broken |
+| 💳 | Requires a paid subscription (Plus, Gold, Platinum) |
 
-> **Önemli:** Bu kitaptaki hiçbir istek, gerçek bir Tinder hesabıyla
-> denenmedi. Bilgiler açık kaynak projelerin koduna ve belgelerine dayanıyor.
-> Kaynaklar her bölümün sonunda ve [Ek C](ekler/c-yontem.md)'de listeleniyor.
-> Son doğrulama tarihi **12 Kasım 2026**.
+> **Important:** None of the requests in this book were tried against a real
+> Tinder account. The material is based on the code and documentation of
+> open-source projects. It was last verified on **12 November 2026**.
 
-## Bu kitap Tinder ile bağlantılı değildir
+## Not affiliated with Tinder
 
-Tinder, Match Group, LLC'nin ticari markasıdır. Bu kitap Match Group
-tarafından onaylanmadı, desteklenmedi ve onunla hiçbir bağı yok. Marka adı
-yalnızca anlatılan sistemi tanımlamak için kullanılıyor.
+Tinder is a trademark of Match Group, LLC. This book is not approved,
+endorsed or supported by Match Group and has no connection to it. The name is
+used only to identify the system being described.
 
 — Bahri Yilmaz

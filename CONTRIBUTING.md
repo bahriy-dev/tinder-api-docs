@@ -1,61 +1,63 @@
-# Katkı rehberi
+# Contributing
 
-Kitabı doğru ve güncel tutmaya yardım ettiğin için teşekkürler. Bu projede
-**doğruluk, kapsamdan önce gelir.**
+Thanks for helping keep this handbook accurate. Here, **accuracy comes before
+coverage.**
 
-## Neler kabul edilir?
+## What we accept
 
-- Eskimiş veya hatalı bir endpoint bilgisinin düzeltilmesi (kaynakla birlikte)
-- Yeni bir endpoint, başlık veya yanıt alanı (kaynak kod veya belge bağlantısıyla)
-- Kataloğa yeni bir proje ([Ek C](book/src/ekler/c-yontem.md)'deki ölçütlere uygun)
-- Yazım, anlatım ve bağlantı düzeltmeleri
+- Fixes for outdated or wrong endpoint details (with evidence in the PR)
+- New endpoints, headers or response fields (with evidence in the PR)
+- New catalog projects that meet the criteria in
+  [Appendix C](book/src/appendix/c-methodology.md)
+- Spelling, wording and link fixes
 
-## Neler kabul edilmez?
+## What we don't accept
 
-- Hesap oluşturma, CAPTCHA çözme, ücretli özellikleri atlatma veya başkalarının
-  verisini ifşa etme yöntemleri
-- Gerçek token'lar, telefon numaraları, profil fotoğrafları veya mesajlar içeren
-  her türlü içerik
-- Kaynak gösterilmeyen endpoint iddiaları
+- Ways to create accounts, solve CAPTCHAs, bypass paid features or expose
+  other people's data
+- Anything containing real tokens, phone numbers, profile photos or messages
+- Endpoint claims without evidence
 
-## Bir endpoint'i güncellemek
+## Updating an endpoint
 
-1. İlgili bölümü `book/src/bolumler/` altında bul.
-2. Bilgiyi güncelle ve bölüm sonundaki **Kaynaklar** satırına kaynağı ekle.
-3. Durum işaretini (🟢 / 🟡 / 🔴) güncelle.
-4. [Referans matrisi](book/src/bolumler/10-referans-matrisi.md)'ndeki satırı
-   güncelle.
-5. Önemli bir değişiklikse [Ek D](book/src/ekler/d-degisiklikler.md)'ye ekle.
+1. Find the chapter under `book/src/chapters/`.
+2. Update the information, and put your evidence (a code line, document or
+   commit link) in the pull request description.
+3. Update the status marker (🟢 / 🟡 / 🔴).
+4. Update the row in the
+   [reference matrix](book/src/chapters/10-reference-matrix.md).
+5. For notable changes, add an entry to the
+   [changelog](book/src/appendix/d-changelog.md).
 
-## Kataloğa proje eklemek
+## Adding a catalog project
 
-1. Meta veriyi elle yazma, GitHub API'sinden al:
+1. Don't type metadata by hand. Read it from the GitHub API:
 
    ```bash
    gh api repos/OWNER/REPO --jq '[.stargazers_count,.pushed_at[:10],.archived,.license.spdx_id]'
    ```
 
-2. Projeyi `data/projects.csv` dosyasına kategorisiyle ekle.
-3. `./scripts/refresh-stats.sh > data/stats.tsv` komutunu çalıştır.
-4. [Ek A](book/src/ekler/a-katalog.md)'daki ilgili tabloya satırı ekle.
+2. Add the project and its category to `data/projects.csv`.
+3. Run `./scripts/refresh-stats.sh > data/stats.tsv`.
+4. Add the row to the right table in
+   [Appendix A](book/src/appendix/a-catalog.md).
 
-## Yerelde kontrol
+## Checking locally
 
 ```bash
-mdbook build book    # derleme hatası olmamalı
-mdbook serve book    # http://localhost:3000 adresinde önizleme
+mdbook build book    # must build without errors
+mdbook serve book    # preview at http://localhost:3000
 ```
 
-## Yazım kuralları
+## Style
 
-- Kitap **Türkçe** yazılır. Endpoint, başlık ve kod adları özgün hâliyle
-  `kod` biçiminde kalır.
-- Okura "sen" diye hitap edilir. Kısa ve doğrudan cümleler kullanılır.
-- İddia varsa kaynak da vardır. Kaynaklar çelişiyorsa ikisi de yazılır.
+- Write in plain, direct English and address the reader as "you".
+- Keep endpoint, header and code names in their original form, as `code`.
+- When sources disagree, describe both versions.
 
-## Pull request kontrol listesi
+## Pull request checklist
 
-- [ ] Her yeni bilgi için kaynak bağlantısı var
-- [ ] Durum işaretleri ve referans matrisi güncel
-- [ ] `mdbook build book` hatasız
-- [ ] Hiçbir token, telefon numarası veya gerçek kişisel veri yok
+- [ ] Evidence for every new fact is in the PR description
+- [ ] Status markers and the reference matrix are up to date
+- [ ] `mdbook build book` succeeds
+- [ ] No tokens, phone numbers or real personal data

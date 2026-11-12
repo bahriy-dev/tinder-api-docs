@@ -1,17 +1,17 @@
-name: Kırık bağlantı veya hata
-description: Kırık bir bağlantı, yazım hatası ya da anlatım sorunu bildir
-labels: ["bakım"]
+name: Broken link or typo
+description: Report a broken link, typo or unclear wording
+labels: ["maintenance"]
 body:
   - type: input
     id: where
     attributes:
-      label: Nerede?
-      placeholder: "Bölüm veya sayfa adresi"
+      label: Where?
+      placeholder: "Chapter or page URL"
     validations:
       required: true
   - type: textarea
     id: problem
     attributes:
-      label: Sorun nedir?
+      label: What is wrong?
     validations:
       required: true
