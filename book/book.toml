@@ -1,0 +1,27 @@
+[book]
+title = "Tinder API El Kitabı"
+description = "Tinder'ın resmî olmayan API'sini kaynak koduyla inceleyen Türkçe teknik kitap: kimlik doğrulama, endpoint'ler, kütüphaneler ve sorumlu kullanım."
+authors = ["Bahri Yilmaz"]
+language = "tr"
+src = "src"
+
+[build]
+build-dir = "../dist"
+create-missing = false
+
+[output.html]
+default-theme = "light"
+preferred-dark-theme = "navy"
+git-repository-url = "https://github.com/bahriy-dev/tinder-api-handbook"
+git-repository-icon = "fa-github"
+edit-url-template = "https://github.com/bahriy-dev/tinder-api-handbook/edit/main/book/{path}"
+site-url = "/tinder-api-handbook/"
+no-section-label = false
+
+[output.html.search]
+enable = true
+limit-results = 30
+use-boolean-and = true
+
+[output.html.print]
+enable = true

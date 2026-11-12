@@ -1,0 +1,34 @@
+name: Endpoint düzeltmesi veya eklemesi
+description: Eskimiş, hatalı veya eksik bir endpoint bilgisini bildir
+labels: ["endpoint"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ⚠️ Token, telefon numarası, gerçek profil veya mesaj **paylaşma**. Gerekirse değerleri `***` ile gizle.
+  - type: input
+    id: endpoint
+    attributes:
+      label: Endpoint
+      placeholder: "POST /like/{user_id}"
+    validations:
+      required: true
+  - type: input
+    id: chapter
+    attributes:
+      label: İlgili bölüm
+      placeholder: "6. bölüm: Etkileşimler"
+  - type: textarea
+    id: change
+    attributes:
+      label: Ne değişmeli?
+      description: Mevcut bilgi ne, doğrusu ne?
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Kaynak
+      description: Kaynak kod satırı, belge veya commit bağlantısı
+    validations:
+      required: true
