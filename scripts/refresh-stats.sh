@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# data/projects.csv içindeki her projeyi GitHub API ile yeniden doğrular.
-# GitHub CLI (https://cli.github.com) ve `gh auth login` gerekir.
-# Kullanım: ./scripts/refresh-stats.sh > data/stats.tsv
+# Re-verifies every project in data/projects.csv against the GitHub API.
+# Requires the GitHub CLI (https://cli.github.com) and `gh auth login`.
+# Usage: ./scripts/refresh-stats.sh > data/stats.tsv
 set -euo pipefail
 
 cd "$(dirname "$0")/.."

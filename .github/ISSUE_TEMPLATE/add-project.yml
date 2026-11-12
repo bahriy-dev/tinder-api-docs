@@ -1,39 +1,39 @@
-name: Kataloğa proje öner
-description: Ek A'ya eklenmesi gereken bir proje öner
-labels: ["katalog"]
+name: Suggest a catalog project
+description: Propose a project for Appendix A
+labels: ["catalog"]
 body:
   - type: input
     id: repo
     attributes:
-      label: Depo adresi
+      label: Repository URL
       placeholder: https://github.com/owner/repo
     validations:
       required: true
   - type: dropdown
     id: category
     attributes:
-      label: Kategori
+      label: Category
       options:
-        - İstemci kütüphanesi
-        - API dokümantasyonu
-        - Kimlik doğrulama yardımcısı
-        - Yapay zekâ / MCP
-        - Resmî olmayan uygulama
-        - Araştırma / deney
+        - Client library
+        - API documentation
+        - Authentication helper
+        - AI / MCP
+        - Unofficial app
+        - Research / experiment
     validations:
       required: true
   - type: textarea
     id: why
     attributes:
-      label: Neden eklenmeli?
-      description: Listedekilerden neyi farklı veya daha iyi yapıyor?
+      label: Why it belongs here
+      description: What does it do better or differently from what is listed?
     validations:
       required: true
   - type: checkboxes
     id: rules
     attributes:
-      label: Kontroller
+      label: Checks
       options:
-        - label: Proje hesap üretmiyor, ücretli özellikleri atlatmıyor ve başkalarının verisini ifşa etmiyor.
+        - label: It doesn't create accounts, bypass paid features or expose other people's data.
           required: true
-        - label: Projenin yazarı değilim veya yazarı olduğumu belirttim.
+        - label: I am not the author, or I have said that I am.

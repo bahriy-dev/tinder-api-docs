@@ -1,11 +1,11 @@
-# mdBook çıktısı
+# mdBook output
 dist/
 
-# Sırlar
+# Secrets
 .env
 .env.*
 !.env.example
 
-# İşletim sistemi
+# OS files
 .DS_Store
 Thumbs.db

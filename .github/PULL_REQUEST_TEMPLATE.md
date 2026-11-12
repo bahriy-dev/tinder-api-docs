@@ -1,14 +1,14 @@
-## Ne değişiyor?
+## What changes
 
-<!-- Hangi bölüm, endpoint veya katalog satırı? -->
+<!-- Which chapter, endpoint or catalog row? -->
 
-## Kaynak
+## Evidence
 
-<!-- Her yeni bilgi için kaynak kod, belge veya commit bağlantısı -->
+<!-- A code line, document or commit link for every new fact -->
 
-## Kontrol listesi
+## Checklist
 
-- [ ] Her yeni bilginin kaynağı var
-- [ ] Durum işaretleri (🟢/🟡/🔴) ve referans matrisi güncel
-- [ ] `mdbook build book` hatasız
-- [ ] Token, telefon numarası veya gerçek kişisel veri yok
+- [ ] Evidence for every new fact is above
+- [ ] Status markers (🟢/🟡/🔴) and the reference matrix are up to date
+- [ ] `mdbook build book` succeeds
+- [ ] No tokens, phone numbers or real personal data

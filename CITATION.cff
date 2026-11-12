@@ -1,18 +1,19 @@
 cff-version: 1.2.0
-message: "Bu kitaba atıf yapacaksan lütfen aşağıdaki bilgileri kullan."
-title: "Tinder API El Kitabı"
-abstract: "Tinder'ın resmî olmayan API'sini açık kaynak istemcilerin koduyla karşılaştırarak belgeleyen Türkçe teknik kitap."
+message: "If you cite this handbook, please use the metadata below."
+title: "Tinder API Documentation: The Unofficial Handbook"
+abstract: "A technical handbook on Tinder's private, undocumented API, cross-checked against open-source client code: authentication, endpoints, libraries and responsible use."
 type: report
 authors:
   - family-names: Yilmaz
     given-names: Bahri
-version: 1.0.0
+version: 2.0.0
 date-released: 2026-11-12
 license: CC-BY-4.0
-repository-code: "https://github.com/bahriy-dev/tinder-api-handbook"
-url: "https://bahriy-dev.github.io/tinder-api-handbook/"
+repository-code: "https://github.com/bahriy-dev/tinder-api-docs"
+url: "https://bahriy-dev.github.io/tinder-api-docs/"
 keywords:
-  - tinder
-  - reverse-engineering
-  - api-documentation
-  - turkish
+  - tinder api
+  - tinder api documentation
+  - unofficial api
+  - reverse engineering
+  - api reference

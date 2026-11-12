@@ -1,39 +1,39 @@
-# Kendi istemcini tasarlamak
+# Designing your own client
 
-Hazır kütüphaneler ya eskimiş ya da senin ihtiyacına tam uymuyor olabilir.
-Bu bölüm, kendi hesabın için küçük, **güvenli ve bakımı kolay** bir istemci
-yazarken izlenecek ilkeleri ve iki dilde başlangıç iskeletini veriyor.
+Existing libraries may be outdated or not quite fit your needs. This
+chapter gives you the principles for writing a small, **safe and
+maintainable** client for your own account, plus starter skeletons in two
+languages.
 
-## Tasarım ilkeleri
+## Design principles
 
-| İlke | Neden | Nasıl |
+| Principle | Why | How |
 | --- | --- | --- |
-| **Önce okuma** | Okuma işlemleri hesabı değiştirmez, risk düşüktür | İstemciyi `readOnly: true` ile başlat. Yazma metotları ayrıca açılsın. |
-| **Tek giriş noktası** | Başlıklar, hatalar, hız sınırı tek yerde yönetilir | Bütün istekler tek bir `request()` fonksiyonundan geçsin |
-| **Yavaş ve tek sıra** | Otomasyon algılamasını ve hız sınırını önler | İstekler arasında 1,5–3 sn ve rastgele sapma, eş zamanlı istek yok |
-| **Dur sinyaline uy** | `403` ve CAPTCHA yükseltilmiş risk demektir | Bu hatalarda devre kesici açılsın, insan müdahalesi gereksin |
-| **Şemaya güvenme** | API haber vermeden değişir | Yanıtları çalışma zamanında doğrula (Zod, `System.Text.Json` + null kontrolleri) |
-| **Sırları koru** | Token hesabın anahtarıdır | Ortam değişkeni veya anahtar zinciri; loglarda maskeleme |
-| **Geri alınamaz işlemleri kilitle** | Hesap silme ve eşleşme kaldırma geri alınamaz | Bu yolları tanımlama veya açık onay iste |
+| **Read first** | Reads don't change the account, so the risk is low | Start the client with `readOnly: true`. Write methods must be enabled explicitly. |
+| **One entry point** | Headers, errors and rate limits are handled in one place | Route every request through a single `request()` function |
+| **Slow and serial** | Avoids automation detection and rate limits | 1.5–3 s between requests plus random jitter, no concurrent requests |
+| **Respect stop signals** | A `403` or CAPTCHA means elevated risk | Trip a circuit breaker on these errors and require a human to reset it |
+| **Don't trust the schema** | The API changes without notice | Validate responses at runtime (Zod, `System.Text.Json` + null checks) |
+| **Protect secrets** | The token is the key to your account | Environment variable or keychain; mask it in logs |
+| **Lock irreversible actions** | Deleting the account or unmatching can't be undone | Don't define these routes, or require explicit confirmation |
 
-## Mimari
+## Architecture
 
 ```text
 ┌──────────────┐    ┌──────────────┐    ┌───────────────┐    ┌───────────┐
-│ Senin kodun  │──▶ │ TinderClient │──▶ │ RequestGate   │──▶ │  fetch /  │
-│ (UI, CLI…)   │    │ (tipli API)  │    │ • hız sınırı  │    │ HttpClient│
-└──────────────┘    └──────────────┘    │ • devre kesici│    └───────────┘
-                           │            │ • yeniden dene│
+│ Your code    │──▶ │ TinderClient │──▶ │ RequestGate   │──▶ │  fetch /  │
+│ (UI, CLI…)   │    │ (typed API)  │    │ • rate limit  │    │ HttpClient│
+└──────────────┘    └──────────────┘    │ • breaker     │    └───────────┘
+                           │            │ • retries     │
                            ▼            └───────────────┘
                     ┌──────────────┐
-                    │ Şema doğrula │
+                    │ Validate     │
                     └──────────────┘
 ```
 
-## TypeScript iskeleti
+## TypeScript skeleton
 
-Node.js 20+ veya Deno. Harici bağımlılık olarak yalnızca isteğe bağlı `zod`
-kullanılıyor.
+Node.js 20+ or Deno. The only external dependency is the optional `zod`.
 
 ```ts
 // tinder-client.ts
@@ -55,10 +55,10 @@ export class TinderClient {
   private queue: Promise<unknown> = Promise.resolve();
 
   constructor(private readonly opts: Options) {
-    if (!opts.token) throw new Error("TINDER_AUTH_TOKEN eksik");
+    if (!opts.token) throw new Error("TINDER_AUTH_TOKEN is missing");
   }
 
-  // --- Okuma ---
+  // --- Reads ---
   profile(include = ["user", "likes", "boost"]) {
     return this.request("GET", "/v2/profile", { include: include.join(",") });
   }
@@ -77,16 +77,16 @@ export class TinderClient {
     });
   }
 
-  // --- Yazma (readOnly: false gerektirir) ---
+  // --- Writes (require readOnly: false) ---
   sendMessage(matchId: string, message: string) {
     this.assertWritable();
     return this.request("POST", `/user/matches/${encodeURIComponent(matchId)}`, {}, { message });
   }
 
-  // --- Altyapı ---
+  // --- Plumbing ---
   private assertWritable() {
     if (this.opts.readOnly !== false) {
-      throw new Error("İstemci salt okunur. Yazmak için readOnly: false ver.");
+      throw new Error("The client is read-only. Pass readOnly: false to enable writes.");
     }
   }
 
@@ -96,13 +96,13 @@ export class TinderClient {
     query: Record<string, string> = {},
     body?: unknown,
   ): Promise<unknown> {
-    // İstekleri sıraya koy: aynı anda tek istek.
+    // Queue requests: one at a time.
     const run = async () => {
-      if (this.blocked) throw new TinderBlockedError("Devre açık: önceki 403/CAPTCHA");
+      if (this.blocked) throw new TinderBlockedError("Circuit open: a previous 403/CAPTCHA");
       await this.pace();
 
       const url = new URL(path, BASE);
-      url.search = new URLSearchParams({ locale: this.opts.locale ?? "tr", ...query }).toString();
+      url.search = new URLSearchParams({ locale: this.opts.locale ?? "en", ...query }).toString();
 
       const res = await fetch(url, {
         method,
@@ -115,15 +115,15 @@ export class TinderClient {
         body: body === undefined ? undefined : JSON.stringify(body),
       });
 
-      if (res.status === 401) throw new TinderAuthError("Token geçersiz veya süresi dolmuş");
+      if (res.status === 401) throw new TinderAuthError("Token invalid or expired");
       if (res.status === 403 || res.status === 429) {
-        this.blocked = true; // İnsan bakana kadar dur.
-        throw new TinderBlockedError(`HTTP ${res.status}: otomasyon durduruldu`);
+        this.blocked = true; // Stop until a human looks.
+        throw new TinderBlockedError(`HTTP ${res.status}: automation stopped`);
       }
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
 
       const json = (await res.json()) as { data?: unknown };
-      return json.data ?? json; // v2 zarfı veya düz nesne
+      return json.data ?? json; // v2 envelope or flat object
     };
     const next = this.queue.then(run, run);
     this.queue = next.catch(() => undefined);
@@ -140,18 +140,18 @@ export class TinderClient {
 }
 ```
 
-Kullanımı:
+Usage:
 
 ```ts
 const client = new TinderClient({ token: process.env.TINDER_AUTH_TOKEN! });
 const matches = await client.matches(20);
 ```
 
-> **Not:** `429` hatasında burada da devre kesiliyor. Bilinçli olarak
-> temkinli bir seçim. Kişisel kullanımda hız sınırına takıldıysan zaten
-> fazla hızlı gidiyorsun demektir.
+> **Note:** The circuit also trips on `429`. That is a deliberately
+> cautious choice: for personal use, hitting the rate limit means you are
+> already going too fast.
 
-## C# / .NET 8 iskeleti
+## C# / .NET 8 skeleton
 
 ```csharp
 // TinderClient.cs
@@ -172,7 +172,7 @@ public sealed class TinderClient : IDisposable
 
     public bool ReadOnly { get; init; } = true;
 
-    public TinderClient(string token, string locale = "tr", TimeSpan? minDelay = null)
+    public TinderClient(string token, string locale = "en", TimeSpan? minDelay = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(token);
         _locale = locale;
@@ -190,7 +190,7 @@ public sealed class TinderClient : IDisposable
 
     public Task<JsonElement> SendMessageAsync(string matchId, string message, CancellationToken ct = default)
     {
-        if (ReadOnly) throw new InvalidOperationException("İstemci salt okunur. ReadOnly = false ile oluştur.");
+        if (ReadOnly) throw new InvalidOperationException("The client is read-only. Create it with ReadOnly = false.");
         return SendAsync(HttpMethod.Post, $"/user/matches/{Uri.EscapeDataString(matchId)}", new { message }, ct);
     }
 
@@ -199,7 +199,7 @@ public sealed class TinderClient : IDisposable
         await _gate.WaitAsync(ct);
         try
         {
-            if (_blocked) throw new TinderBlockedException("Devre açık: önceki 403/429");
+            if (_blocked) throw new TinderBlockedException("Circuit open: a previous 403/429");
 
             var wait = _last + _minDelay + TimeSpan.FromMilliseconds(Random.Shared.Next(0, 1000)) - DateTimeOffset.UtcNow;
             if (wait > TimeSpan.Zero) await Task.Delay(wait, ct);
@@ -213,7 +213,7 @@ public sealed class TinderClient : IDisposable
             if (response.StatusCode is HttpStatusCode.Forbidden or HttpStatusCode.TooManyRequests)
             {
                 _blocked = true;
-                throw new TinderBlockedException($"HTTP {(int)response.StatusCode}: otomasyon durduruldu");
+                throw new TinderBlockedException($"HTTP {(int)response.StatusCode}: automation stopped");
             }
             response.EnsureSuccessStatusCode();
 
@@ -234,20 +234,20 @@ public sealed class TinderClient : IDisposable
 }
 ```
 
-Kullanımı:
+Usage:
 
 ```csharp
 var token = Environment.GetEnvironmentVariable("TINDER_AUTH_TOKEN")
-    ?? throw new InvalidOperationException("TINDER_AUTH_TOKEN eksik");
+    ?? throw new InvalidOperationException("TINDER_AUTH_TOKEN is missing");
 using var tinder = new TinderClient(token);
 var matches = await tinder.GetMatchesAsync(count: 20);
 Console.WriteLine(matches.GetProperty("matches").GetArrayLength());
 ```
 
-## Yanıtları doğrulamak
+## Validating responses
 
-API şeması değiştiğinde sessizce yanlış veri işlemek yerine hemen hata
-almak istersin. TypeScript'te Zod ile:
+When the API schema changes, you want an immediate error rather than
+silently processing the wrong data. In TypeScript, with Zod:
 
 ```ts
 import { z } from "zod";
@@ -263,37 +263,31 @@ const MatchesData = z.object({ matches: z.array(Match) });
 const data = MatchesData.parse(await client.matches(20));
 ```
 
-`.passthrough()` bilinmeyen alanlara izin verir; yalnızca **gerçekten
-kullandığın** alanları zorunlu tut.
+`.passthrough()` allows unknown fields. Only require the fields you
+**actually use**.
 
-## Test stratejisi
+## Testing strategy
 
-Canlı API'ye karşı otomatik test yazma. Hem hesabın için risk hem de testler
-güvenilmez olur. Bunun yerine:
+Don't write automated tests against the live API. It puts your account at
+risk and the tests will be flaky. Instead:
 
-1. Tarayıcının Network sekmesinden **kendi** yanıtlarını kaydet.
-2. Kişisel verileri (ad, fotoğraf URL'si, mesaj, kimlik) sahte değerlerle
-   değiştir.
-3. Bu "fixture" dosyalarıyla ayrıştırma ve iş mantığını test et.
-4. HTTP katmanını taklit et (`msw`, `nock`, .NET'te `HttpMessageHandler`).
+1. Save **your own** responses from the browser's Network tab.
+2. Replace personal data (names, photo URLs, messages, IDs) with fake
+   values.
+3. Test parsing and business logic against these fixture files.
+4. Mock the HTTP layer (`msw`, `nock`, or an `HttpMessageHandler` in .NET).
 
-## Yapay zekâ ajanları için MCP notları
+## Notes for AI agents and MCP
 
-Bir yapay zekâ ajanına Tinder erişimi vermek istiyorsan:
+If you want to give an AI agent access to Tinder:
 
-- Resmî **MCP SDK**'sını kullan (`@modelcontextprotocol/sdk`,
-  `ModelContextProtocol` NuGet paketi).
-- Yalnızca **okuma araçları** sun: `list_matches`, `read_messages`,
+- Use the official **MCP SDK** (`@modelcontextprotocol/sdk`, or the
+  `ModelContextProtocol` NuGet package).
+- Expose **read-only tools** only: `list_matches`, `read_messages`,
   `get_profile`.
-- Mesaj göndermek gibi yazma işlemlerini sunacaksan, her çağrıda **insan
-  onayı** iste. Ajan yalnızca taslak hazırlasın.
-- Beğenme, geçme ve toplu işlemleri **hiç sunma**.
-- Karşı tarafın mesajlarını ajanın bağlamına koymanın gizlilik sonuçlarını
-  düşün ([13. bölüm](13-sorumlu-kullanim.md)).
+- If you expose writes such as sending messages, require **human
+  approval** on every call. Let the agent only draft.
+- **Never** expose like, pass or bulk actions.
+- Think about the privacy implications of putting the other person's
+  messages into the agent's context ([chapter 13](13-responsible-use.md)).
 
----
-
-**Esinlenilen kaynaklar:** [tinder-api-ts](https://github.com/Miguelo981/tinder-api)
-(tek giriş noktası, hata türleri), [tinder.py](https://github.com/tiagovla/tinder.py)
-(yeniden deneme), [tinder-mcp-server](https://github.com/glassBead-tc/tinder-mcp-server)
-(şema doğrulama).

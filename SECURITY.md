@@ -1,21 +1,21 @@
-# Güvenlik politikası
+# Security Policy
 
-## Bu depo hakkında
+## About this repository
 
-Bu depoda çalıştırılan bir hizmet yok. Depoda bir kitap, kod örnekleri ve
-yardımcı betikler var. Şunlardan birini fark edersen:
+This repository runs no service. It contains a book, code samples and helper
+scripts. If you notice:
 
-- Kitapta veya geçmiş commit'lerde yanlışlıkla yer almış bir **token, telefon
-  numarası veya kişisel veri**
-- Kod örneklerinde güvenliği zayıflatan bir hata
+- a **token, phone number or personal data** that ended up in the book or in
+  the commit history, or
+- a bug in a code sample that weakens security,
 
-lütfen herkese açık bir issue açma. Bunun yerine
-[gizli bir güvenlik bildirimi](https://github.com/bahriy-dev/tinder-api-handbook/security/advisories/new)
-oluştur.
+please don't open a public issue. Open a
+[private security advisory](https://github.com/bahriy-dev/tinder-api-docs/security/advisories/new)
+instead.
 
-## Tinder hakkında
+## About Tinder
 
-Tinder'ın kendisinde bir güvenlik açığı bulduysan bu depoya **bildirme**.
-Doğrudan [Tinder'ın güvenlik sayfası](https://www.gotinder.com/security)
-veya Match Group'un hata ödül programı üzerinden bildir. Ayrıntılar için
-[Sorumlu kullanım](book/src/bolumler/13-sorumlu-kullanim.md) bölümüne bak.
+If you found a vulnerability in Tinder itself, **don't report it here**.
+Report it directly through [Tinder's security page](https://www.gotinder.com/security)
+or Match Group's bug bounty program. See
+[Responsible use](book/src/chapters/13-responsible-use.md).

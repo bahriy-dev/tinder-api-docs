@@ -1,11 +1,11 @@
-name: Endpoint düzeltmesi veya eklemesi
-description: Eskimiş, hatalı veya eksik bir endpoint bilgisini bildir
+name: Endpoint fix or addition
+description: Report an outdated, wrong or missing endpoint detail
 labels: ["endpoint"]
 body:
   - type: markdown
     attributes:
       value: |
-        ⚠️ Token, telefon numarası, gerçek profil veya mesaj **paylaşma**. Gerekirse değerleri `***` ile gizle.
+        ⚠️ **Don't share** tokens, phone numbers, real profiles or messages. Mask values with `***` if needed.
   - type: input
     id: endpoint
     attributes:
@@ -16,19 +16,19 @@ body:
   - type: input
     id: chapter
     attributes:
-      label: İlgili bölüm
-      placeholder: "6. bölüm: Etkileşimler"
+      label: Chapter
+      placeholder: "Chapter 6: Interactions"
   - type: textarea
     id: change
     attributes:
-      label: Ne değişmeli?
-      description: Mevcut bilgi ne, doğrusu ne?
+      label: What should change?
+      description: What does the book say now, and what is correct?
     validations:
       required: true
   - type: textarea
-    id: source
+    id: evidence
     attributes:
-      label: Kaynak
-      description: Kaynak kod satırı, belge veya commit bağlantısı
+      label: Evidence
+      description: A code line, document or commit link
     validations:
       required: true
